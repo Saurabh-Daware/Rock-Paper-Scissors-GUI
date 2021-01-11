@@ -153,6 +153,7 @@ public class MainActivity {
 		GamePanel.setVisible(true);
 	}
 	
+//		Ends game, updates score and hides gamePanel
 	private void EndGame() {
 		comScoreLabel.setText(String.valueOf(ComScore));
 		userScoreLabel.setText(String.valueOf(UserScore));
