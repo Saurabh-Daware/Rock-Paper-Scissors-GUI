@@ -6,13 +6,18 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.util.*;
 
 public class MainActivity {
-	
+
 //	panel initialization
 	JPanel IntroPanel = new JPanel();
 	JPanel GamePanel = new JPanel();
 	int UserScore, ComScore;
+	JLabel comScoreLabel = new JLabel(String.valueOf(ComScore));
+	JLabel userScoreLabel = new JLabel(String.valueOf(UserScore));
+	JButton ngButton = new JButton("New Game");
+	JLabel resultText = new JLabel("");
 
 //	Main activity constructor
 	MainActivity() {
@@ -27,45 +32,49 @@ public class MainActivity {
 		frame.setVisible(true);
 		IntroPanel.setVisible(true);
 		GamePanel.setVisible(false);
-		startGame();
 	}
 
-	public static void main(String[] args) throws IOException{
-		
+	public static void main(String[] args) throws IOException {
+
 		MainActivity main = new MainActivity();
 	}
-	
 
 //	Places components in IntroPanel and handles ngButton click
-	
 	private void placeIntroComponents(JPanel IntroPanel) {
-		
+
 		IntroPanel.setLayout(null);
-		
+		IntroPanel.revalidate();
+		IntroPanel.repaint();
+		IntroPanel.setBounds(0, 0, 600, 400);
+
 //		Computer score
-		JLabel comScoreLabel = new JLabel(String.valueOf(ComScore));
-		comScoreLabel.setBounds(45, 50, 175, 220);
-		comScoreLabel.setFont(new Font(comScoreLabel.getFont().getName(), Font.PLAIN, 200));
+		comScoreLabel.setBounds(55, 20, 175, 220);
+		comScoreLabel.setFont(new Font(comScoreLabel.getFont().getName(), Font.PLAIN, 150));
 		IntroPanel.add(comScoreLabel);
+		
+//		Computer label
 		JLabel Computer = new JLabel("    Computer");
-		Computer.setBounds(35, 240, 175, 40);
+		Computer.setBounds(45, 240, 175, 40);
 		Computer.setFont(new Font(comScoreLabel.getFont().getName(), Font.PLAIN, 20));
 		IntroPanel.add(Computer);
+		
+//		Result text
+		resultText.setBounds(240, 170, 150, 40);
+		resultText.setFont(new Font(comScoreLabel.getFont().getName(), Font.PLAIN, 20));
+		IntroPanel.add(resultText);
 
 //		User Score
-		JLabel userScoreLabel = new JLabel(String.valueOf(UserScore));
-		userScoreLabel.setBounds(390, 20, 175, 220);
-		userScoreLabel.setFont(new Font(userScoreLabel.getFont().getName(), Font.PLAIN, 200));
+		userScoreLabel.setBounds(400, 20, 175, 220);
+		userScoreLabel.setFont(new Font(userScoreLabel.getFont().getName(), Font.PLAIN, 150));
 		IntroPanel.add(userScoreLabel);
-		
+
 //		User Label
 		JLabel User = new JLabel("    User");
-		User.setBounds(400, 240, 175, 40);
+		User.setBounds(410, 240, 175, 40);
 		User.setFont(new Font(comScoreLabel.getFont().getName(), Font.PLAIN, 20));
 		IntroPanel.add(User);
 
 //		New Game Button
-		JButton ngButton = new JButton("New Game");
 		ngButton.setBounds(220, 300, 150, 30);
 		ngButton.setBorder(BorderFactory.createEmptyBorder());
 		ngButton.setBackground(Color.white);
@@ -74,18 +83,18 @@ public class MainActivity {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				IntroPanel.setVisible(false);
-				startGame();
-				System.out.println("OK");
+				StartGame(); 
 			}
 		});
 	}
 
 //	Places components in GamePanel
 	private void placeGameComponents(JPanel gamePanel) {
-		
+
 		GamePanel.setLayout(null);
+		GamePanel.setBounds(0, 0, 600, 400);
 		String Info = "Choose your hand!";
-		
+
 //		Loading image
 		BufferedImage RockImg = null, PaperImg = null, ScissorsImg = null;
 		try {
@@ -95,7 +104,7 @@ public class MainActivity {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		
+
 //		Rock Button
 		JButton Rock = new JButton(new ImageIcon(RockImg));
 		Rock.setBounds(15, 90, 185, 180);
@@ -104,11 +113,9 @@ public class MainActivity {
 		Rock.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
-				System.out.println("Rock");
+				Result(1);
 			}
 		});
-		
 
 //		Paper Button
 		JButton Paper = new JButton(new ImageIcon(PaperImg));
@@ -118,12 +125,10 @@ public class MainActivity {
 		Paper.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
-				System.out.println("Paper");
+				Result(1);
 			}
 		});
-		
-		
+
 //		Scissors Button
 		JButton Scissors = new JButton(new ImageIcon(ScissorsImg));
 		Scissors.setBounds(410, 90, 190, 180);
@@ -132,20 +137,56 @@ public class MainActivity {
 		Scissors.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
-				System.out.println("Scissors");
+				Result(2);
 			}
 		});
-		
+
 		JLabel infoLabel = new JLabel(Info);
 		infoLabel.setBounds(200, 20, 300, 30);
 		infoLabel.setFont(new Font(infoLabel.getFont().getName(), Font.PLAIN, 25));
 		GamePanel.add(infoLabel);
 	}
-	
+
 //		Hides introduction panel and starts game
-	private void startGame() {
+	private void StartGame() {
 		IntroPanel.setVisible(false);
 		GamePanel.setVisible(true);
+	}
+	
+	private void EndGame() {
+		comScoreLabel.setText(String.valueOf(ComScore));
+		userScoreLabel.setText(String.valueOf(UserScore));
+		ngButton.setText("Play again");
+		IntroPanel.revalidate();
+		IntroPanel.repaint();
+		placeIntroComponents(IntroPanel);
+		IntroPanel.setVisible(true);
+		GamePanel.setVisible(false);
+	}
+	
+//	game logic
+	private void Result(int choice) {
+		
+		int comChoice =  new Random().nextInt(3);
+		System.out.println(comChoice);
+		
+		if(choice == 2 && comChoice == 0) {
+			ComWins();
+		}else if(choice > comChoice){
+			UserWins();
+		}else {
+			ComWins();
+		}
+		EndGame();		
+	}
+	
+	private int UserWins() {
+		resultText.setText("You win!!");
+		return ++this.UserScore;
+	}
+	
+	private int ComWins() {
+		resultText.setText("You Lose!");
+		return ++ComScore;
 	}
 }
