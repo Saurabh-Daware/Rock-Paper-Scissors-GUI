@@ -173,9 +173,14 @@ public class MainActivity {
 		
 		if(choice == 2 && comChoice == 0) {
 			ComWins();
-		}else if(choice > comChoice){
+		}
+                else if(choice > comChoice){
 			UserWins();
-		}else {
+		}
+                else if(choice == comChoice){
+			GameTie();
+		}
+                else {
 			ComWins();
 		}
 		EndGame();		
@@ -184,6 +189,10 @@ public class MainActivity {
 	private int UserWins() {
 		resultText.setText("You win!!");
 		return ++this.UserScore;
+	}
+        
+        private void GameTie() {
+		resultText.setText("It's a draw!!");
 	}
 	
 	private int ComWins() {
