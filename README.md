@@ -1,1 +1,1 @@
-# Rock-Paper-Scissors_Java_GUI
+# Rock-Paper-Scissors-Java-GUI
